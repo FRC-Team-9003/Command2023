@@ -22,12 +22,10 @@ public class RobotContainer {
   public final Arm m_arm = new Arm();
   public final Elevator m_elevator = new Elevator();
   public final Drivetrain m_drivetrain = new Drivetrain();
-  // public final LCDisplay m_lcdDisplay = new LCDisplay();
 
   // Joysticks
   private final CommandJoystick driveStick = new CommandJoystick(0);
   private final CommandXboxController xbox = new CommandXboxController(1);
-  // private final CommandJoystick boxStick = new CommandJoystick(2);
 
   // A chooser for autonomous commands
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -54,8 +52,6 @@ public class RobotContainer {
     m_elevator.setDefaultCommand(
         new RunCommand(() -> m_elevator.setSpeed(xbox.getLeftY()), m_elevator));
     // new SafetyEnabledElev(xbox.getLeftY(), m_elevator, m_arm));
-
-    // m_lcdDisplay.setDefaultCommand(new RunCommand(() -> m_lcdDisplay.printLCD(), m_lcdDisplay));
   }
 
   public static RobotContainer getInstance() {
