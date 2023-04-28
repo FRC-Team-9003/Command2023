@@ -58,6 +58,7 @@ public class ShuffleboardSetup extends CommandBase {
 
     armSensors.addBoolean("Forward Limit", m_arm::getfwdSwitch);
     armSensors.addDouble("Arm Encoder", m_arm::getEncoderValue);
+    armSensors.addDouble("Absolute Encoder", m_arm::getAbsoluteValue);
 
     elevSensors.addBoolean("Forward Limit", m_elevator::getfwdSwitch);
     elevSensors.addBoolean("Reverse Limit", m_elevator::getrevSwitch);
