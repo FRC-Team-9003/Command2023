@@ -17,6 +17,7 @@ public class Elevator extends SubsystemBase {
   private SparkMaxLimitSwitch reverseSwitch;
 
   private SparkMaxPIDController controller;
+  private int slot = 0;
 
   public Elevator() {
     elev = new CANSparkMax(ELEV.elevCan.id, MotorType.kBrushless);
@@ -26,8 +27,16 @@ public class Elevator extends SubsystemBase {
     forwardSwitch = elev.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
     reverseSwitch = elev.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
 
-    // controller = elev.getPIDController();
-    // setup the controller
+    /*     controller = elev.getPIDController();
+    controller.setP(ElevatorConsts.kP);
+    controller.setD(ElevatorConsts.kD);
+    controller.setI(ElevatorConsts.kI);
+    controller.setIZone(ElevatorConsts.kIz);
+    controller.setFF(ElevatorConsts.kFF);
+    controller.setOutputRange(ElevatorConsts.kMinOutput, ElevatorConsts.kMaxOutput);
+
+    controller.setSmartMotionMaxVelocity(5000, slot);
+    controller.setSmartMotionMaxAccel(2000, slot); */
   }
 
   @Override
@@ -63,10 +72,12 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
+    // controller.setReference(speed, CANSparkMax.ControlType.kSmartVelocity);
     elev.set(speed);
   }
 
   public void stopElev() {
-    elev.set(0);
+    // controller.setReference(0, CANSparkMax.ControlType.kSmartVelocity);
+    elev.stopMotor();
   }
 }

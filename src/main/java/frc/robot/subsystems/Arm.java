@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConsts.*;
@@ -12,6 +14,8 @@ public class Arm extends SubsystemBase {
   private CANSparkMax armLeft;
   private CANSparkMax armRight;
   private RelativeEncoder armEncoder;
+  private AbsoluteEncoder armAbsolute;
+
   private SparkMaxLimitSwitch fwdLimitSwitch;
 
   public Arm() {
@@ -24,6 +28,8 @@ public class Arm extends SubsystemBase {
 
     armEncoder = armRight.getEncoder();
     armEncoder.setPosition(0);
+
+    armAbsolute = armRight.getAbsoluteEncoder(Type.kDutyCycle);
 
     fwdLimitSwitch = armRight.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
   }
@@ -50,6 +56,10 @@ public class Arm extends SubsystemBase {
 
   public double getEncoderValue() {
     return armEncoder.getPosition();
+  }
+
+  public double getAbsoluteValue() {
+    return armAbsolute.getPosition();
   }
 
   public void resetEncoder() {

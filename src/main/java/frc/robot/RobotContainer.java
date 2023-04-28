@@ -1,9 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import java.util.*;
 
 public class RobotContainer {
 
@@ -27,6 +22,7 @@ public class RobotContainer {
   public final Arm m_arm = new Arm();
   public final Elevator m_elevator = new Elevator();
   public final Drivetrain m_drivetrain = new Drivetrain();
+  // public final LCDisplay m_lcdDisplay = new LCDisplay();
 
   // Joysticks
   private final CommandJoystick driveStick = new CommandJoystick(0);
@@ -36,54 +32,8 @@ public class RobotContainer {
   // A chooser for autonomous commands
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-  // Network table setup
-  NetworkTableInstance inst;
-  NetworkTable table;
-  DoublePublisher angle;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private RobotContainer() {
-    // Shuffleboard Setup
-    ShuffleboardTab sensorTab = Shuffleboard.getTab("Sensor Data");
-    ShuffleboardTab commands = Shuffleboard.getTab("Commands");
-
-    ShuffleboardLayout elevCmds =
-        commands
-            .getLayout("Elevator", BuiltInLayouts.kList)
-            .withSize(2, 2)
-            .withProperties(Map.of("Label Position", "HIDDEN"));
-
-    ShuffleboardLayout armSensors =
-        sensorTab
-            .getLayout("Arm", BuiltInLayouts.kList)
-            .withSize(2, 2)
-            .withProperties(Map.of("Label Position", "HIDDEN"));
-
-    ShuffleboardLayout elevSensors =
-        sensorTab
-            .getLayout("Elevator", BuiltInLayouts.kList)
-            .withSize(2, 2)
-            .withProperties(Map.of("Label Position", "HIDDEN"));
-    ShuffleboardLayout driveSensors =
-        sensorTab
-            .getLayout("Motors & Encoders", BuiltInLayouts.kList)
-            .withSize(2, 2)
-            .withProperties(Map.of("Label Position", "LEFT"));
-
-    // SmartDashboard Buttons
-    elevCmds.add(new ElevMax(m_elevator));
-    elevCmds.add(new ElevMin(m_elevator));
-
-    armSensors.addBoolean("Forward Limit", m_arm::getfwdSwitch);
-    armSensors.addDouble("Arm Encoder", m_arm::getEncoderValue);
-
-    elevSensors.addBoolean("Forward Limit", m_elevator::getfwdSwitch);
-    elevSensors.addBoolean("Reverse Limit", m_elevator::getrevSwitch);
-    elevSensors.addDouble("Elevator Encoder", m_elevator::getEncoderValue);
-    elevSensors.addDouble("Elevator Speed", m_elevator::getSpeed);
-
-    driveSensors.addDouble("Left Front Speed", m_drivetrain::getSpeed);
-    driveSensors.addDouble("Left Front Encoder", m_drivetrain::getEncoderValue);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -94,16 +44,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Mode", m_chooser);
 
-    inst = NetworkTableInstance.getDefault();
-    table = inst.getTable("datatable");
-    angle = table.getDoubleTopic("gyro").publish();
-
     m_drivetrain.setDefaultCommand(
         new RunCommand(
-            () -> {
-              m_drivetrain.drive(-driveStick.getY(), driveStick.getX(), driveStick.getTwist());
-              angle.set(m_drivetrain.getGyroAngle());
-            },
+            () -> m_drivetrain.drive(-driveStick.getY(), driveStick.getX(), driveStick.getTwist()),
             m_drivetrain));
 
     m_arm.setDefaultCommand(new RunCommand(() -> m_arm.setArmSpeed(xbox.getRightY()), m_arm));
@@ -112,6 +55,7 @@ public class RobotContainer {
         new RunCommand(() -> m_elevator.setSpeed(xbox.getLeftY()), m_elevator));
     // new SafetyEnabledElev(xbox.getLeftY(), m_elevator, m_arm));
 
+    // m_lcdDisplay.setDefaultCommand(new RunCommand(() -> m_lcdDisplay.printLCD(), m_lcdDisplay));
   }
 
   public static RobotContainer getInstance() {
