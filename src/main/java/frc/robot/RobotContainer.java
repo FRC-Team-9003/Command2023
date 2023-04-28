@@ -119,12 +119,6 @@ public class RobotContainer {
 
     final Trigger armLimit = new Trigger(m_arm::getfwdSwitch);
     armLimit.onTrue(new InstantCommand(() -> m_arm.resetEncoder()));
-
-    /*final Trigger test = boxStick.button(3);
-    test.whileTrue(
-        new ElevMin(m_elevator)
-            .andThen(new ElevMax(m_elevator))
-            .withInterruptBehavior(InterruptionBehavior.kCancelSelf));*/
   }
 
   public CommandJoystick getDriveStick() {
